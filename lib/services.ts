@@ -51,8 +51,11 @@ function processServiceRemoved(
   return { [domain]: domainInfo };
 }
 
-const fetchServices = (conn: Connection) => conn.getServices();
-const subscribeUpdates = (conn: Connection, store: Store<HassServices>) =>
+const fetchServices = <Auth>(conn: Connection<Auth>) => conn.getServices();
+const subscribeUpdates = <Auth>(
+  conn: Connection<Auth>,
+  store: Store<HassServices>
+) =>
   Promise.all([
     conn.subscribeEvents<ServiceRegisteredEvent>(
       store.action(processServiceRegistered),
@@ -64,8 +67,11 @@ const subscribeUpdates = (conn: Connection, store: Store<HassServices>) =>
     )
   ]).then(unsubs => () => unsubs.forEach(fn => fn()));
 
-export default (conn: Connection, onChange: (state: HassServices) => void) =>
-  createCollection<HassServices>(
+export default <Auth>(
+  conn: Connection<Auth>,
+  onChange: (state: HassServices) => void
+) =>
+  createCollection<Auth, HassServices>(
     "_srv",
     fetchServices,
     subscribeUpdates,

@@ -4,9 +4,9 @@ export type Error = 1 | 2 | 3 | 4;
 
 export type UnsubscribeFunc = () => void;
 
-export type ConnectionOptions = {
+export type ConnectionOptions<A = Auth> = {
   setupRetry: number;
-  createSocket: (auth: Auth, options: ConnectionOptions) => Promise<WebSocket>;
+  createSocket: (auth: A, options: ConnectionOptions<A>) => Promise<WebSocket>;
 };
 
 export type HassEvent = {

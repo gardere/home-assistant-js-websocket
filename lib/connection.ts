@@ -11,12 +11,11 @@ import {
   HassServices,
   HassConfig
 } from "./types";
-import { Auth } from "./auth";
 import createSocket from "./socket";
 
 const DEBUG = false;
 
-type EventListener = (conn: Connection, eventData?: any) => void;
+type EventListener<Auth> = (conn: Connection<Auth>, eventData?: any) => void;
 
 type WebSocketPongResponse = {
   id: number;
@@ -52,20 +51,20 @@ type WebSocketResponse =
   | WebSocketResultResponse
   | WebSocketResultErrorResponse;
 
-export class Connection {
+export class Connection<Auth> {
   auth: Auth;
-  options: ConnectionOptions;
+  options: ConnectionOptions<Auth>;
   commandId: number;
   commands: {
     [commandId: number]: any;
   };
   eventListeners: {
-    [eventType: string]: EventListener[];
+    [eventType: string]: EventListener<Auth>[];
   };
   closeRequested: boolean;
   socket: WebSocket;
 
-  constructor(auth: Auth, options: ConnectionOptions) {
+  constructor(auth: Auth, options: ConnectionOptions<Auth>) {
     this.auth = auth;
     // connection options
     //  - setupRetry: amount of ms to retry when unable to connect on initial setup
@@ -305,17 +304,17 @@ const defaultConnectionOptions: ConnectionOptions = {
   createSocket
 };
 
-export default async function createConnection(
+export default async function createConnection<Auth>(
   auth: Auth,
-  options?: Partial<ConnectionOptions>
+  options?: Partial<ConnectionOptions<Auth>>
 ) {
-  const connOptions: ConnectionOptions = Object.assign(
+  const connOptions: ConnectionOptions<Auth> = Object.assign(
     {},
     defaultConnectionOptions,
     options
   );
   const socket = await options.createSocket(auth, connOptions);
-  const conn = new Connection(auth, connOptions);
+  const conn = new Connection<Auth>(auth, connOptions);
   conn.setSocket(socket);
   return conn;
 }

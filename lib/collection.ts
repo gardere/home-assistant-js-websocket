@@ -6,14 +6,14 @@ import { UnsubscribeFunc } from "./types";
 // subscribeUpdates(connection, store) returns promise that resolves
 // to an unsubscription function.
 
-export default function createCollection<State>(
+export default function createCollection<Auth, State>(
   key: string,
-  fetchCollection: (conn: Connection) => Promise<State>,
+  fetchCollection: (conn: Connection<Auth>) => Promise<State>,
   subscribeUpdates: (
-    conn: Connection,
+    conn: Connection<Auth>,
     store: Store<State>
   ) => Promise<UnsubscribeFunc>,
-  conn: Connection,
+  conn: Connection<Auth>,
   onChange: (state: State) => void
 ): UnsubscribeFunc {
   if (key in conn) {

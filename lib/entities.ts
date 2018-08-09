@@ -36,14 +36,20 @@ async function fetchEntities(conn) {
   return entities;
 }
 
-const subscribeUpdates = (conn: Connection, store: Store<HassEntities>) =>
+const subscribeUpdates = <Auth>(
+  conn: Connection<Auth>,
+  store: Store<HassEntities>
+) =>
   conn.subscribeEvents<StateChangedEvent>(
     ev => processEvent(store, ev as StateChangedEvent),
     "state_changed"
   );
 
-export default (conn: Connection, onChange: (state: HassEntities) => void) =>
-  createCollection<HassEntities>(
+export default <Auth>(
+  conn: Connection<Auth>,
+  onChange: (state: HassEntities) => void
+) =>
+  createCollection<Auth, HassEntities>(
     "_ent",
     fetchEntities,
     subscribeUpdates,

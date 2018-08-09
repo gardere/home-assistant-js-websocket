@@ -26,8 +26,11 @@ const subscribeUpdates = (conn, store) =>
     "component_loaded"
   );
 
-export default (conn: Connection, onChange: (state: HassConfig) => void) =>
-  createCollection<HassConfig>(
+export default <Auth>(
+  conn: Connection<Auth>,
+  onChange: (state: HassConfig) => void
+) =>
+  createCollection<Auth, HassConfig>(
     "_cnf",
     fetchConfig,
     subscribeUpdates,
