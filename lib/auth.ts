@@ -90,7 +90,7 @@ async function tokenRequest(
 
   const resp = await fetch(`${hassUrl}/auth/token`, {
     method: "POST",
-    credentials: 'same-origin',
+    credentials: "same-origin",
     body: formData
   });
 
@@ -132,6 +132,10 @@ export class Auth {
     this._saveTokens = saveTokens;
   }
 
+  get hassUrl() {
+    return this.data.hassUrl;
+  }
+
   get wsUrl() {
     // Convert from http:// -> ws://, https:// -> wss://
     return `ws${this.data.hassUrl.substr(4)}/api/websocket`;
@@ -170,7 +174,7 @@ export class Auth {
     // There is no error checking, as revoke will always return 200
     await fetch(`${this.data.hassUrl}/auth/token`, {
       method: "POST",
-      credentials: 'same-origin',
+      credentials: "same-origin",
       body: formData
     });
 
